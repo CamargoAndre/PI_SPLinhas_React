@@ -1,18 +1,47 @@
-import React from 'react';
-import { View,Text, StyleSheet, Button, Platform } from 'react-native';
+import React, {useState} from 'react';
+import { View,Text, StyleSheet, Button, Platform, TextInput } from 'react-native';
+import * as bus from 'bus-promise';
 
-import { HeaderButtons, Item} from 'react-navigation-header-buttons';
 
-import BotaoCabecalho from '../componentes/BotaoCabecalho';
 
 const TelaInicial = (props) => {
+
+    const [texto, setTexto] = useState('');
+
+    const capturaTexto = (textoDigitado) => {
+        setTexto(textoDigitado);
+    }
+
+
+    const resultadoBusca =(texto) => {
+        bus.auth('5c32ec06af1099b7310a9e195a66981b80375eb3adc5fd90c4615dfb27347a3c')
+        .then(getLines)
+
+    }
+
+
+    const getLines = (auth) => {
+        bus.find({
+            auth,
+            type: 'lines',
+            terms: texto
+          }).then((response) => {
+              props.navigation.navigate("Resultado" , {resultado: response})
+          })
+    }
+
+
   return (
   
      <View> 
         <Text>Tela Inicial</Text>
+        <TextInput 
+            onChangeText={capturaTexto}
+            value={texto}
+        />
         <Button
-            title='Entrar'
-            onPress={() => {props.navigation.navigate("Resultado")}}
+            title='Buscar'
+            onPress={resultadoBusca}
 
         />
   
@@ -22,17 +51,7 @@ const TelaInicial = (props) => {
 
 TelaInicial.navigationOptions = dadosNav => {
     return {
-        headerTitle: "SpLinhas",
-        headerRigth:
-            <HeaderButtons
-                HeaderButtonComponent={BotaoCabecalho}>
-                <Item
-                    title="Adicionar"
-                    iconName={Platform.OS === 'android' ? 'md-add' : 'ios-add'}
-                    onPress={() => {dadosNav.navigation.navigate('Resultado')}}
-                />
-
-            </HeaderButtons>
+        headerTitle: "SpLinhas"
     }
 }
 
