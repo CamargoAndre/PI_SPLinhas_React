@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { View,Text, StyleSheet, Button, Platform, TextInput } from 'react-native';
+import { View,Text, StyleSheet, Button, Platform, TextInput, TouchableWithoutFeedback, Image, Keyboard, Alert } from 'react-native';
 import * as bus from 'bus-promise';
 
 
@@ -13,10 +13,9 @@ const TelaInicial = (props) => {
     }
 
 
-    const resultadoBusca =(texto) => {
+    const resultadoBusca = (texto) => {
         bus.auth('5c32ec06af1099b7310a9e195a66981b80375eb3adc5fd90c4615dfb27347a3c')
-        .then(getLines)
-
+        .then(getLines) 
     }
 
 
@@ -30,39 +29,115 @@ const TelaInicial = (props) => {
           })
     }
 
+    const fazConsulta = () =>{
+        if(texto.trim() != ""){
+            bus.auth('5c32ec06af1099b7310a9e195a66981b80375eb3adc5fd90c4615dfb27347a3c')
+            .then(getLines)
+        } else {
+            Alert.alert('Erro', 'Você precisa inserir alguma informação para pesquisar.', [
+            { text: "OK", onPress: () => console.log("OK Pressed")}
+        ]);
+        }
 
+    }
+    
   return (
-  
-     <View> 
-        <Text>Tela Inicial</Text>
-        <TextInput 
-            onChangeText={capturaTexto}
-            value={texto}
-        />
-        <Button
-            title='Buscar'
-            onPress={resultadoBusca}
-
-        />
-  
-    </View>
+    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+        <View style={estilos.container}>
+                    
+            <Text style={estilos.title}> SPLinhas </Text>
+            <Image 
+                style={estilos.image}
+                source={require('../assets/logo.png')}
+            />
+            <Text style={estilos.body}> Informe aqui a linha que deseja buscar </Text>
+            <TextInput
+                style={estilos.search}
+                placeholder='Exemplo: Lapa ou 809L'
+                onChangeText={capturaTexto}
+                value={texto}
+                
+            />  
+            
+            <Button
+                title = "Buscar"
+                color = '#20B2AA'
+                onPress={fazConsulta}
+            />
+        </View>
+    </TouchableWithoutFeedback>
   );
 }
 
 TelaInicial.navigationOptions = dadosNav => {
     return {
-        headerTitle: "SpLinhas"
+        headerTitle: "Tela Inicial"
     }
 }
 
 
-
-
-
-
-
-
-
-const estilos = StyleSheet.create({})
+const estilos = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        padding:5
+    },
+    title: {
+        fontSize: 30,
+        paddingBottom: 5,
+        fontWeight: "bold"
+    },
+    body: {
+        fontSize: 15,
+        paddingBottom: 25,
+        marginTop: 10
+    },
+    search: {
+        height: 40, 
+        width: 300,
+        borderBottomColor: '#20B2AA', 
+        borderBottomWidth: 1,
+        marginBottom: 10
+    },
+      button: {
+        marginTop: 30,
+        color: '#20B2AA',
+        fontSize: 20
+    },
+    image:{
+        width: 100,
+        height: 100
+    },
+    card: {
+        flex: 1,
+        backgroundColor: 'white',
+        alignItems: 'center',
+        marginTop: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: "#ccc"
+    },
+    item: {
+        fontSize: 14,
+        padding: 2,
+        alignSelf: 'flex-start',
+        flexDirection: 'row',
+        flex: 1,
+    },
+    label: {
+        fontWeight: "bold",
+        alignSelf: 'flex-start'
+    },
+    div: {
+        alignSelf: 'flex-start'
+    },
+    access:{
+        fontSize: 32,
+        marginBottom: 10,
+        marginTop: 5,
+        padding: 1,
+        color: '#20B2AA'
+    },
+})
 
 export default TelaInicial;

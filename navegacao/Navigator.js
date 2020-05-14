@@ -8,7 +8,7 @@ const Navigator = createStackNavigator({
 
     Inicial: TelaInicial,
     Resultado: TelaResultadoBusca,
-    Mapa: TelaMapa
+    Mapa: TelaMapa,
 
 });
 
