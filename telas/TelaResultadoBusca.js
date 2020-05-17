@@ -2,13 +2,22 @@ import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, Text, Alert, Card } from 'react-native';
 import {Ionicons, FontAwesome} from "@expo/vector-icons"
 import { TouchableOpacity, LongPressGestureHandler } from 'react-native-gesture-handler';
-
+import * as bus from 'bus-promise';
+import { set } from 'react-native-reanimated';
 
 const TelaResultadoBusca = (props) => {
 
   const [linhas, setLinhas]  = useState(props.navigation.getParam('resultado'))
+  const [cordLinha, setCordLinha] = useState([]);
+  const [auth, setAuth] = useState(bus.auth('5c32ec06af1099b7310a9e195a66981b80375eb3adc5fd90c4615dfb27347a3c'))
+
+
+  const adicionarCordLinha = (response) => {
+    setCordLinha(response)  
+    
+  }
+
   if(linhas && linhas.length ){
-    console.log('Há conteúdo')
   } else{
     Alert.alert(
       'Erro',
@@ -20,9 +29,22 @@ const TelaResultadoBusca = (props) => {
     )
   }
 
-  const pressHandler = (lineId) => {
-    console.log(lineId);
-   
+  const pressHandler = (linha) => {
+    Alert.alert('Linha selecionada: ' + linha.item.shapeId)
+    setCordLinha([])
+
+    bus.find({
+      auth: auth._v,
+      type:'shapes',
+      shapeId: linha.item.shapeId
+    }).then((response) => {
+      
+      adicionarCordLinha(response)
+    })
+    
+    console.log(cordLinha)
+    //props.navigation.navigate("Mapa" , {lin: linha, cordMap: cordLinha})
+
   }
 
   return (
@@ -32,7 +54,7 @@ const TelaResultadoBusca = (props) => {
           data = {linhas}
           keyExtractor ={linha => linha.lineId}
           renderItem={linha => (
-            <TouchableOpacity onPress={() => Alert.alert('Linha selecionada: ' + linha.item.displaySign) }
+            <TouchableOpacity onPress={() => {pressHandler(linha)} }
             style={estilos.card}
             >
            
