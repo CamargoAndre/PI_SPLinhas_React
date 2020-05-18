@@ -14,18 +14,21 @@ const TelaResultadoBusca = (props) => {
 
 
   const adicionarCordLinha = (shape, linha) => {
-    //setCordLinha([])
-    //shape.map((item) => {
-     // setCordLinha((cordLinha) => {
-       // return [... cordLinha, {latitude: item.lat , longitude: item.lng}]
-     // })
-    //})
+    let primeiro;
+    let ultimo;
+  
+    shape.map((item) => {
+      if(item.sequence === '1'){
+        primeiro = ({latitude: item.lat , longitude: item.lng});
+      }else{
+        ultimo = ({latitude: item.lat , longitude: item.lng});
+      }
 
+    })
     let test = shape.map((item) => ({latitude: item.lat , longitude: item.lng}))
-    
-    props.navigation.navigate("Mapa" , {lin: linha, cordMap: test})
-    
-      
+
+    props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo})
+          
   }
 
   if(linhas && linhas.length ){
