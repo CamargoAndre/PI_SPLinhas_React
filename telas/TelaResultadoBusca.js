@@ -16,6 +16,7 @@ const TelaResultadoBusca = (props) => {
   const adicionarCordLinha = (shape, linha) => {
     let primeiro;
     let ultimo;
+    let onibusPosicao;
   
     shape.map((item) => {
       if(item.sequence === '1'){
@@ -27,7 +28,17 @@ const TelaResultadoBusca = (props) => {
     })
     let test = shape.map((item) => ({latitude: item.lat , longitude: item.lng}))
 
-    props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo})
+    bus.find({
+      auth: auth._v,
+      type: 'vehiclesPosition',
+      lineId: linha.item.lineId
+    }).then((response) => {
+      
+      onibusPosicao = response
+      props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo, posicaoBus: onibusPosicao})
+    })
+
+    //props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo, posicaoBus: onibusPosicao})
           
   }
 
@@ -44,7 +55,7 @@ const TelaResultadoBusca = (props) => {
   }
 
   const pressHandler = (linha) => {
-    Alert.alert('Linha selecionada: ' + linha.item.shapeId)
+    Alert.alert('Linha selecionada: ' + linha.item.lineId)
     
 
     bus.find({
