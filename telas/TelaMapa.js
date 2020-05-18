@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import { View, StyleSheet, Text, Image, Alert } from 'react-native';
 import MapView, { Polyline, Marker, Callout } from 'react-native-maps'
 import * as bus from 'bus-promise';
-import { set } from 'react-native-reanimated';
 
 
 
@@ -14,12 +13,12 @@ const TelaMapa = (props) => {
   const[primeiro, setPrimeiro] = useState(props.navigation.getParam('posInical'))
   const[ultimo, setUltimo] = useState(props.navigation.getParam('posFinal'))
   const [posicoes, setPosicoes] = useState(props.navigation.getParam('posicaoBus'))
-  const[firstTime, setFirstTime] = useState(1);
+
 
   let latitude = (parseFloat(ultimo.latitude) + parseFloat(primeiro.latitude)) / 2;
   let longitude = (parseFloat(ultimo.longitude) + parseFloat(primeiro.longitude)) / 2;
 
-  let position = <Text></Text>
+  let position = <Marker coordinate={{latitude: 0, longitude: 0}}/>
 
   console.log(posicoes.vehicles)
 
@@ -34,25 +33,18 @@ const TelaMapa = (props) => {
     )
 
   }else{
-
-    if(firstTime === 1){
     
       position = posicoes.vehicles.map((pos) =>
       
       
-        <Marker key= {pos.lat}
+        <MapView.Marker key= {pos.lat.toString()}
               coordinate={{latitude: parseFloat(pos.lat) , longitude: parseFloat(pos.lng)}}
             > 
               <Image 
                 style={estilos.imagem}
                 source={require('../assets/Onibus1.png')}/>
-        </Marker>
+        </MapView.Marker>
       )
-      
-
-      setFirstTime(2)
-      
-    }
 
   }
 
@@ -70,7 +62,7 @@ const TelaMapa = (props) => {
             longitudeDelta: 0.0421,
           }}
         >
-          <Marker
+          <MapView.Marker
             coordinate={{latitude: parseFloat(primeiro.latitude) , longitude: parseFloat(primeiro.longitude)}}
           > 
             <Image 
@@ -79,8 +71,8 @@ const TelaMapa = (props) => {
               <Callout>
                 <Text> Inicio do Trajeto </Text>
             </Callout>
-          </Marker> 
-          <Marker
+          </MapView.Marker> 
+          <MapView.Marker
             coordinate={{latitude: parseFloat(ultimo.latitude) , longitude: parseFloat(ultimo.longitude)}}
           > 
             <Image 
@@ -89,7 +81,7 @@ const TelaMapa = (props) => {
             <Callout>
               <Text> Fim do Trajeto </Text>
             </Callout>
-          </Marker> 
+          </MapView.Marker> 
 
           {position}
           

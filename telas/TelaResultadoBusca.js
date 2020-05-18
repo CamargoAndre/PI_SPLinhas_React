@@ -26,7 +26,7 @@ const TelaResultadoBusca = (props) => {
       }
 
     })
-    let test = shape.map((item) => ({latitude: item.lat , longitude: item.lng}))
+    let test = shape.map((item) => ({latitude: parseFloat(item.lat) , longitude: parseFloat(item.lng)}))
 
     bus.find({
       auth: auth._v,
@@ -78,7 +78,7 @@ const TelaResultadoBusca = (props) => {
      <View> 
         <FlatList 
           data = {linhas}
-          keyExtractor ={linha => linha.lineId}
+          keyExtractor ={linha => linha.lineId.toString()}
           renderItem={linha => (
             <TouchableOpacity onPress={() => {pressHandler(linha)} }
             style={estilos.card}
