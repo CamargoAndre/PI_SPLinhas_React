@@ -12,9 +12,20 @@ const TelaResultadoBusca = (props) => {
   const [auth, setAuth] = useState(bus.auth('5c32ec06af1099b7310a9e195a66981b80375eb3adc5fd90c4615dfb27347a3c'))
 
 
-  const adicionarCordLinha = (response) => {
-    setCordLinha(response)  
+
+  const adicionarCordLinha = (shape, linha) => {
+    //setCordLinha([])
+    //shape.map((item) => {
+     // setCordLinha((cordLinha) => {
+       // return [... cordLinha, {latitude: item.lat , longitude: item.lng}]
+     // })
+    //})
+
+    let test = shape.map((item) => ({latitude: item.lat , longitude: item.lng}))
     
+    props.navigation.navigate("Mapa" , {lin: linha, cordMap: test})
+    
+      
   }
 
   if(linhas && linhas.length ){
@@ -31,7 +42,7 @@ const TelaResultadoBusca = (props) => {
 
   const pressHandler = (linha) => {
     Alert.alert('Linha selecionada: ' + linha.item.shapeId)
-    setCordLinha([])
+    
 
     bus.find({
       auth: auth._v,
@@ -39,10 +50,11 @@ const TelaResultadoBusca = (props) => {
       shapeId: linha.item.shapeId
     }).then((response) => {
       
-      adicionarCordLinha(response)
+      adicionarCordLinha(response, linha)
+
     })
     
-    console.log(cordLinha)
+    //console.log(cordLinha)
     //props.navigation.navigate("Mapa" , {lin: linha, cordMap: cordLinha})
 
   }

@@ -10,7 +10,6 @@ const TelaMapa = (props) => {
 
   const[linhaMap, setLinhaMap] = useState(props.navigation.getParam('cordMap'))
   
-  console.log(linhaMap)
   
   return (
   
@@ -26,7 +25,7 @@ const TelaMapa = (props) => {
           }}
         >
           <Polyline
-            coordinates={[{latitude: -23.5489, longitude: -46.6388}, {latitude: -23.6000, longitude: -47.6388}]}
+            coordinates={linhaMap}
             strokeColor='#04B4AE'
             strokeWidth={8}
           />
