@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { View,Text, StyleSheet, Button, Platform, TextInput, TouchableWithoutFeedback, Image, Keyboard, Alert } from 'react-native';
 import * as bus from 'bus-promise';
 
-
+console.disableYellowBox = true;
 
 const TelaInicial = (props) => {
 
@@ -84,13 +84,15 @@ const estilos = StyleSheet.create({
         padding:5
     },
     title: {
-        fontSize: 30,
+        fontSize: 40,
         paddingBottom: 5,
-        fontWeight: "bold"
+        fontWeight: "bold",
+        paddingTop: 50
     },
     body: {
         fontSize: 15,
-        paddingBottom: 25,
+        paddingBottom: 10,
+        paddingTop: 25,
         marginTop: 10
     },
     search: {

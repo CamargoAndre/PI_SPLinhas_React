@@ -1,14 +1,52 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, FlatList, Text, Alert, Card } from 'react-native';
-import {Ionicons, FontAwesome} from "@expo/vector-icons"
 import { TouchableOpacity, LongPressGestureHandler } from 'react-native-gesture-handler';
+import * as bus from 'bus-promise';
+import { set } from 'react-native-reanimated';
+import {Ionicons} from "@expo/vector-icons"
+import { HeaderButtons, Item } from 'react-navigation-header-buttons';
+import BotaoCabecalho from '../componentes/BotaoCabecalho';
 
+console.disableYellowBox = true;
 
 const TelaResultadoBusca = (props) => {
 
   const [linhas, setLinhas]  = useState(props.navigation.getParam('resultado'))
+  const [cordLinha, setCordLinha] = useState([]);
+  const [auth, setAuth] = useState(bus.auth('5c32ec06af1099b7310a9e195a66981b80375eb3adc5fd90c4615dfb27347a3c'))
+
+
+
+  const adicionarCordLinha = (shape, linha) => {
+    let primeiro;
+    let ultimo;
+    let onibusPosicao;
+  
+    shape.map((item) => {
+      if(item.sequence === '1'){
+        primeiro = ({latitude: item.lat , longitude: item.lng});
+      }else{
+        ultimo = ({latitude: item.lat , longitude: item.lng});
+      }
+
+    })
+    let test = shape.map((item) => ({latitude: parseFloat(item.lat) , longitude: parseFloat(item.lng)}))
+
+    bus.find({
+      auth: auth._v,
+      type: 'vehiclesPosition',
+      lineId: linha.item.lineId
+    }).then((response) => {
+      
+      onibusPosicao = response
+      props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo, posicaoBus: onibusPosicao})
+    })
+
+    //props.navigation.navigate("Mapa" , {lin: linha, cordMap: test, posInical: primeiro, posFinal: ultimo, posicaoBus: onibusPosicao})
+          
+  }
+
   if(linhas && linhas.length ){
-    console.log('Há conteúdo')
   } else{
     Alert.alert(
       'Erro',
@@ -20,9 +58,23 @@ const TelaResultadoBusca = (props) => {
     )
   }
 
-  const pressHandler = (lineId) => {
-    console.log(lineId);
-   
+  const pressHandler = (linha) => {
+    Alert.alert('Sentido selecionado: ' + '\n' + linha.item.mainTerminal )
+    
+
+    bus.find({
+      auth: auth._v,
+      type:'shapes',
+      shapeId: linha.item.shapeId
+    }).then((response) => {
+      
+      adicionarCordLinha(response, linha)
+
+    })
+    
+    //console.log(cordLinha)
+    //props.navigation.navigate("Mapa" , {lin: linha, cordMap: cordLinha})
+
   }
 
   return (
@@ -30,9 +82,9 @@ const TelaResultadoBusca = (props) => {
      <View> 
         <FlatList 
           data = {linhas}
-          keyExtractor ={linha => linha.lineId}
+          keyExtractor ={linha => linha.lineId.toString()}
           renderItem={linha => (
-            <TouchableOpacity onPress={() => Alert.alert('Linha selecionada: ' + linha.item.displaySign) }
+            <TouchableOpacity onPress={() => {pressHandler(linha)} }
             style={estilos.card}
             >
            
@@ -55,7 +107,17 @@ const TelaResultadoBusca = (props) => {
 }
 TelaResultadoBusca.navigationOptions = dadosNav => {
   return {
-      headerTitle: "Resultado da busca"
+      headerTitle: "Linhas",     
+      headerRight:            
+      <HeaderButtons                
+        HeaderButtonComponent={BotaoCabecalho}>                
+        <Item                    
+          title="Adicionar"                    
+          iconName={Platform.OS === 'android' ? 'md-home' : 'ios-home'} 
+          color='black'                   
+          onPress={() => { dadosNav.navigation.navigate("Inicial") }} 
+          /> 
+      </HeaderButtons> 
   }
 }
 const estilos = StyleSheet.create({
